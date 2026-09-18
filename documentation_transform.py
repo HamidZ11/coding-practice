@@ -1,47 +1,58 @@
 class Solution:
     def transformDocumentation(self, source: str) -> str:
 
+        # 3 things i need to track : inside_word , result , in_backtick
+        # I just keep appending to results if im not in backticks
+
+        inside_word = ""
+        result = ""
         in_backticks = False
-        current_identifier = []
-        output = []
 
-        def to_camel_case(identifier):
-                    results = []
-                    capitalise_next = False
-                    for char in identifier:
-                        if capitalise_next:
-                            char = char.upper()
-                            capitalise_next = False # reset capitalise next 
-                        if char == "_": 
-                            capitalise_next = True # if your char is an underscore, next char is caps
-                        else: 
-                            results.append(char) 
-                    
-                    results = "".join(results) 
-                    
-                    return results
+        for char in source:
 
-        for char in source: 
             if char == "`": 
-                if in_backticks == False: 
-                    in_backticks = not in_backticks
-                    current_identifier = [] # resets it each time you open a new backtick
-                else: 
-                    current_identifier = "".join(current_identifier)
-                    if current_identifier.isupper():
-                        output.append("`" + current_identifier + "`")
-                    else:
-                        output.append("`" + to_camel_case(current_identifier) + "`")
-                    in_backticks = False
-            else:
-                if in_backticks == True:
-                      current_identifier.append(char)
-                else:
-                     output.append(char)
+                if in_backticks: # This is the case for the closing backtick, (It has to be, if it was the opener, you wouldn't be in_backticks)
 
-        output = "".join(output)
-        return output
-                
+                    if inside_word.isupper():
+                        result += inside_word
+                        result += "`"
+                        inside_word = ""
+                        in_backticks = False
+
+                    else: 
+                        capitalise_next = False
+                        transformed_word = ""
+                        for char in inside_word:
+                            if char == "_":
+                                capitalise_next = True
+                            elif capitalise_next:
+                                transformed_word += char.upper()
+                                capitalise_next = False
+                            else:
+                                transformed_word += char
+
+                        result += transformed_word
+                        result += "`"
+                        transformed_word = ""
+                        in_backticks = False
+                        inside_word = ""
+
+
+                else: # so if you're not in backticks alerady you want to append the first backtick to reults and set in backticks to True
+                    result += "`"
+                    in_backticks = True
+
+            else: 
+                if in_backticks:
+                    inside_word += char
+                else:
+                    result += char
+
+        return result
+
+
+
+
 
 s = Solution()
 

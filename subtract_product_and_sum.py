@@ -1,16 +1,19 @@
 class Solution:
     def subtractProductAndSum(self, n: int) -> int:
-
         strnum = str(n)
-        digitsum = 0 
-        digitproduct = 1
+        listnum = []
+        product_num = 1
 
         for i in strnum:
-            digit = int(i)
-            digitsum = digitsum + digit
-            digitproduct = digitproduct * digit
+            listnum.append(int(i))
 
-        return digitproduct - digitsum
+        for i in listnum:
+            product_num = product_num * int(i)
+
+        num_sum = sum(listnum)
+
+        return product_num - num_sum
+
 
 
 s = Solution()
